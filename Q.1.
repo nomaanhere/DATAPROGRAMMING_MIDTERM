@@ -1,0 +1,33 @@
+import math
+
+class Point:
+    def __init__(self, x=0, y=0):
+        self.x = x
+        self.y = y
+
+class Segment:
+    def __init__(self, p1=None, p2=None):
+        self.p1 = p1 if p1 else Point()  # Default to Point() if p1 is None
+        self.p2 = p2 if p2 else Point()  # Default to Point() if p2 is None
+    
+    def length(self):
+        # Calculate and return the length of the segment using the Euclidean distance formula
+        return math.sqrt((self.p2.x - self.p1.x)**2 + (self.p2.y - self.p1.y)**2)
+    
+    def slope(self):
+        # Calculate and return the slope of the segment
+        if self.p2.x - self.p1.x != 0:
+            return  (self.p2.x - self.p1.x)/(self.p2.y - self.p1.y)
+        else:
+            return None  # Return None for vertical segments (undefined slope)
+
+
+# Example usage:
+p1 = Point(3, 4)      # Create Point p1 at (3, 4)
+p2 = Point()          # Create Point p2 at the default (0, 0)
+
+s = Segment(p1, p2)   # Create Segment s using points p1 and p2
+
+# Print the length and slope of segment s
+print("Length of the segment:", s.length())
+print("Slope of the segment:", s.slope())
