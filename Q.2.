@@ -1,1 +1,67 @@
+import sqlite3
+from datetime import date
+
+# New set of weather data for the example
+weather_entries = [
+    (1, '2015-01-01', 10),
+    (2, '2015-01-02', 25),
+    (3, '2015-01-03', 20),
+    (4, '2015-01-04', 30)
+]
+
+# Function to create the database and insert the weather entries
+def create_database():
+    conn = sqlite3.connect('temp_data11.db')
+    cur = conn.cursor()
+
+    # Create the TemperatureRecords table
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS TemperatureRecords (
+            record_id INTEGER PRIMARY KEY,
+            date TEXT,
+            temperature INTEGER
+        )
+    ''')
+
+    # Insert the weather entries into the TemperatureRecords table
+    cur.executemany('''
+        INSERT INTO TemperatureRecords (record_id, date, temperature) 
+        VALUES (?, ?, ?)
+    ''', weather_entries)
+
+    # Commit the transaction and close the connection
+    conn.commit()
+    conn.close()
+
+def get_days_with_increase():
+    conn = sqlite3.connect('temp_data11.db')
+    cur = conn.cursor()
+
+    # Execute the SQL query
+    cur.execute(sql)
+
+    # Fetch all matching record IDs
+    increased_temp_days = cur.fetchall()
+
+    # Close the cursor and connection
+    cur.close()
+    conn.close()
+
+    return increased_temp_days
+
+# SQL query to find days with higher temperatures than the previous day
+sql = """
+    SELECT current_day.record_id
+    FROM TemperatureRecords current_day
+    JOIN TemperatureRecords previous_day 
+    ON DATE(current_day.date, '-1 day') = previous_day.date
+    WHERE current_day.temperature > previous_day.temperature
+"""
+
+# Create the database and retrieve the days with increased temperatures
+create_database()
+days_with_higher_temps = get_days_with_increase()
+
+# Print the days with higher temperatures
+print("Days with higher temperatures than the previous day (record IDs):", days_with_higher_temps)
 
